@@ -1,33 +1,14 @@
-@require: stdjareport
-@require: itemize
-@require: annot
-
-@require: base/typeset/base
-@require: base/float
-
-@require: coinsshinkan23pamphlet/coinsshinkan23pamphlet
-
-% Document-local function definition
-let-inline \show-float f =
-  f
-  |> Float.to-string
-  |> embed-string
-in
+@require: class-coins-shinkan23-pamphlet/class-coins-shinkan23-pamphlet
 
 document (|
   title = {coinsshinkan23pamphlet Manual};
   author = {momeemt};
+  show-title = false;
+  show-toc = false;
 |) '<
-  +p {
-    See `https://qiita.com/na4zagin3/items/b392f5d522f9bcc0493b` for the instruction in Japanese.
-  }
-  +chapter{Examples} <
+  +section{Hello} <
     +p {
-      ${\pi = \mathrm-token!(Float.to-string Coinsshinkan23pamphlet.pi)}.
-    }
-    +p {
-      Geometric mean of 1, 3, and 5 is
-      \show-float(Coinsshinkan23pamphlet.geo-mean [1.; 3.; 5.]);
+      筑波大学情報学群情報科学類 新歓2023
     }
   >
 >

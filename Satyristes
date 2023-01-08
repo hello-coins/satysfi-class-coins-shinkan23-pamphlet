@@ -4,14 +4,14 @@
 ;; Library declaration
 (library
   ;; Library name
-  (name "coinsshinkan23pamphlet")
+  (name "class-coins-shinkan23-pamphlet")
   ;; Library version
   (version "1.0.0")
   ;; Files
   (sources
     ((packageDir "src")))
   ;; OPAM package file
-  (opam "satysfi-coinsshinkan23pamphlet.opam")
+  (opam "satysfi-class-coins-shinkan23-pamphlet.opam")
   ;; Dependency
   (dependencies
     ((dist ()) ; Standard library
@@ -21,7 +21,7 @@
 ;; Library doc declaration
 (libraryDoc
   ;; Library doc name
-  (name "coinsshinkan23pamphlet-doc")
+  (name "class-coins-shinkan23-pamphlet-doc")
   ;; Library version
   (version "1.0.0")
   ;; Working directory to build docs
@@ -34,10 +34,10 @@
   (sources
     ((doc "manual.pdf" "doc/manual.pdf")))
   ;; OPAM package file
-  (opam "satysfi-coinsshinkan23pamphlet-doc.opam")
+  (opam "satysfi-class-coins-shinkan23-pamphlet-doc.opam")
   ;; Dependency
   (dependencies
-    ((coinsshinkan23pamphlet ()) ; the main library
+    ((class-coins-shinkan23-pamphlet ()) ; the main library
      (dist ()) ; Standard library
      (base ()) ; Base library
     )))

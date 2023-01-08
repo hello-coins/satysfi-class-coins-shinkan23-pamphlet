@@ -1,4 +1,4 @@
-# satysfi-coinsshinkan23pamphlet
+# satysfi-class-coins-shinkan23-pamphlet
 筑波大学情報学群情報科学類の新歓パンフレット作成に用いるSATySFiクラスファイルです。  
 
 ソースコードは[gfngfn/SATySFi](https://github.com/gfngfn/SATySFi)に含まれる[`stdjabook.satyh`](https://github.com/gfngfn/SATySFi/blob/master/lib-satysfi/dist/packages/stdjabook.satyh)からコードを借用し、改造したものです。

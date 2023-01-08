@@ -1,0 +1,33 @@
+opam-version: "2.0"
+name: "satysfi-class-coins-shinkan23-pamphlet"
+version: "0.0.1"
+synopsis: "A SATySFi Class File For Welcome Pamphlet"
+description: """
+A class file for coins new students welcome pamphlet 2023
+"""
+maintainer: "Mutsuha Asada <mail@momee.mt>"
+authors: "Mutsuha Asada <mail@momee.mt>"
+license: "LGPL-3.0-or-later"
+homepage: "https://github.com/coins-shinkan23/satysfi-class-coins-shinkan23-pamphlet"
+dev-repo: "git+https://github.com/coins-shinkan23/satysfi-class-coins-shinkan23-pamphlet.git"
+bug-reports: "https://github.com/coins-shinkan23/satysfi-class-coins-shinkan23-pamphlet/issues"
+depends: [
+  "satysfi" { >= "0.0.6" & < "0.0.7" }
+  "satyrographos" { >= "0.0.2.6" & < "0.0.3" }
+
+  # If your library depends on other libraries, please write down here
+  "satysfi-dist"
+  "satysfi-base"
+]
+build: [
+  ["satyrographos" "opam" "build"
+   "--name" "class-coins-shinkan23-pamphlet"
+   "--prefix" "%{prefix}%"
+   "--script" "%{build}%/Satyristes"]
+]
+install: [
+  ["satyrographos" "opam" "install"
+   "--name" "class-coins-shinkan23-pamphlet"
+   "--prefix" "%{prefix}%"
+   "--script" "%{build}%/Satyristes"]
+]
