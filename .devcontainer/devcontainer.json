@@ -3,6 +3,8 @@
   "dockerFile": "Dockerfile",
   "postCreateCommand": "./.devcontainer/postCreateCommand.sh",
   "extensions": [
-    "wraikny.wraikny-satysfi-extension"
+    "wraikny.wraikny-satysfi-extension",
+    "mattn.Lisp",
+    "ocamllabs.ocaml-platform"
   ]
 }
