@@ -1,0 +1,8 @@
+{
+  "name": "satysfi-coinsshinkan23pamphlet",
+  "dockerFile": "Dockerfile",
+  "postCreateCommand": "./.devcontainer/postCreateCommand.sh",
+  "extensions": [
+    "wraikny.wraikny-satysfi-extension"
+  ]
+}

@@ -1,0 +1,2 @@
+FROM amutake/satysfi:latest
+ENV SATYROGRAPHOS_EXPERIMENTAL 1
