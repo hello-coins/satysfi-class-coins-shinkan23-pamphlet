@@ -635,6 +635,8 @@ let title-deco =
 
   end
 
+  let-block ctx +bunseki name =
+    line-break true true ctx (inline-fil ++ read-inline ctx { 《文責: #name;》 })
 
 let document = CoinsShinkan23Pamphlet.document
   % ad-hoc
