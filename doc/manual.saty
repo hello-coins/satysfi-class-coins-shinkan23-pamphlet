@@ -1,15 +1,28 @@
 @require: class-coins-shinkan23-pamphlet/class-coins-shinkan23-pamphlet
+%@import: ../src/class-coins-shinkan23-pamphlet
+@require: lipsum/lipsum
 
 document (|
-  title = {coinsshinkan23pamphlet Manual};
-  author = {momeemt};
-  show-title = false;
-  show-toc = false;
+  title = {ﾅﾝﾁｬﾗ紹介};
+  num-chapter = 2;
+  start-page = 9;
 |) '<
   +section{Hello} <
-    +p {
-      筑波大学情報学群情報科学類 新歓2023
-    }
-    +bunseki { 浅田睦葉 }
+    +p {\wagahai(1);}
+    +subsection {subsection} <
+      +p {\wagahai(2);}
+      +p {\wagahai(3);}
+    >
+  >
+  +section {section2} <
+    +p {\wagahai(1);}
+    +framebox <
+      +p {\wagahai(2);}
+    >
+  >
+  +bunseki { 浅田睦葉 }
+  +column {コラム・Column} {\@puripuri2100} <
+    +p{\jugemu;}
+    +p{\iroha;}
   >
 >

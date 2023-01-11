@@ -5,14 +5,14 @@ synopsis: "A SATySFi Class File For Welcome Pamphlet"
 description: """
 A class file for coins new students welcome pamphlet 2023
 """
-maintainer: "Mutsuha Asada <mail@momee.mt>"
-authors: "Mutsuha Asada <mail@momee.mt>"
+maintainer: "Mutsuha Asada <mail@momee.mt> and Naoki Kaneko <puripuri2100@gmail.com>"
+authors: "Mutsuha Asada <mail@momee.mt> and Naoki Kaneko <puripuri2100@gmail.com>"
 license: "LGPL-3.0-or-later"
 homepage: "https://github.com/coins-shinkan23/satysfi-class-coins-shinkan23-pamphlet"
 dev-repo: "git+https://github.com/coins-shinkan23/satysfi-class-coins-shinkan23-pamphlet.git"
 bug-reports: "https://github.com/coins-shinkan23/satysfi-class-coins-shinkan23-pamphlet/issues"
 depends: [
-  "satysfi" { >= "0.0.6" & < "0.0.7" }
+  "satysfi" { >= "0.0.6" & < "0.0.9" }
   "satyrographos" { >= "0.0.2.6" & < "0.0.3" }
 
   # You may want to include the corresponding library
@@ -20,7 +20,7 @@ depends: [
 
   # Other libraries
   "satysfi-dist"
-  "satysfi-base"
+  "satysfi-lipsum" { >= "0.2.0" & < "0.3.0" }
 ]
 build: [
   ["satyrographos" "opam" "build"

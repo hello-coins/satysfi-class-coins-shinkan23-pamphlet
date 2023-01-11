@@ -6,7 +6,7 @@
   ;; Library name
   (name "class-coins-shinkan23-pamphlet")
   ;; Library version
-  (version "1.0.0")
+  (version "0.0.1")
   ;; Files
   (sources
     ((packageDir "src")))
@@ -16,6 +16,10 @@
   (dependencies
     ((dist ()) ; Standard library
      (base ()) ; Base library
+     (fonts-noto-sans ())
+     (fonts-noto-serif ())
+     (fonts-noto-sans-cjk-jp ())
+     (fonts-noto-serif-cjk-jp ())
     )))
 
 ;; Library doc declaration
@@ -23,7 +27,7 @@
   ;; Library doc name
   (name "class-coins-shinkan23-pamphlet-doc")
   ;; Library version
-  (version "1.0.0")
+  (version "0.0.1")
   ;; Working directory to build docs
   (workingDirectory "doc")
   ;; Build commands
@@ -39,5 +43,5 @@
   (dependencies
     ((class-coins-shinkan23-pamphlet ()) ; the main library
      (dist ()) ; Standard library
-     (base ()) ; Base library
+     (lipsum ())
     )))
