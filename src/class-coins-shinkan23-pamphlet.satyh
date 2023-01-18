@@ -113,7 +113,7 @@ end = struct
       |> set-font Latin          font-latin-roman
       |> set-math-font `lmodern`
       |> set-hyphen-penalty 100
-      |> set-paragraph-margin 5pt 0pt
+      |> set-paragraph-margin 5pt 5pt
       |> set-min-paragraph-ascender-and-descender 0pt 0pt
       |> set-leading 5pt
       |> set-min-gap-of-lines 5pt
@@ -495,9 +495,9 @@ let title-deco =
     in
     let bb-inner =
       block-frame-breakable (ctx |> set-paragraph-margin 0pt 0pt) (0pt, 0pt, 15pt, 15pt) ds (fun ctx -> (
-        let ctx = ctx  |> set-paragraph-margin 5pt 0pt in
+        let ctx = ctx  |> set-paragraph-margin 5pt 5pt in
         read-block ctx inner
-          +++ block-skip 5pt
+          +++ block-skip 1pt
           +++ line-break true true ctx (inline-fil ++ read-inline ctx {図#it-num; #caption;} ++ inline-fil)
       ))
     in
@@ -528,9 +528,9 @@ let title-deco =
     in
     let bb-inner =
       block-frame-breakable (ctx |> set-paragraph-margin 0pt 0pt) (0pt, 0pt, 15pt, 15pt) ds (fun ctx -> (
-        let ctx = ctx  |> set-paragraph-margin 5pt 0pt in
+        let ctx = ctx  |> set-paragraph-margin 5pt 5pt in
         read-block ctx inner
-          +++ block-skip 5pt
+          +++ block-skip 1pt
           +++ line-break true true ctx (inline-fil ++ read-inline ctx {図#it-num; #caption;} ++ inline-fil)
       ))
     in
@@ -713,7 +713,7 @@ let title-deco =
     let ctx = ctx |> set-paragraph-margin 15pt 15pt in
     block-frame-breakable ctx pads deco-set (fun ctx -> (
       let ctx =
-        ctx |> set-paragraph-margin 5pt 1pt
+        ctx |> set-paragraph-margin 5pt 5pt
             |> set-min-paragraph-ascender-and-descender 0pt 0pt
             |> set-leading 4pt
       in
@@ -752,7 +752,7 @@ let title-deco =
     let deco-set = VDecoSet.simple-frame 2pt Color.black Color.white in
     let ctx = ctx |> set-paragraph-margin 15pt 15pt in
     block-frame-breakable ctx pads deco-set (fun ctx -> (
-      let ctx = ctx |> set-paragraph-margin 5pt 0pt in
+      let ctx = ctx |> set-paragraph-margin 5pt 5pt in
       read-block ctx text
     ))
 
