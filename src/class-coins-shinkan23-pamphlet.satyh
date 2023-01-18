@@ -17,6 +17,11 @@
 @require: base/int
 
 
+type position =
+  | Top
+  | Here
+
+
 module CoinsShinkan23Pamphlet : sig
 
   val document : 'a -> block-text -> document
@@ -28,7 +33,8 @@ module CoinsShinkan23Pamphlet : sig
 
   direct \ref : [string] inline-cmd
   direct \ref-page : [string] inline-cmd
-  direct \figure : [string?; inline-text; block-text] inline-cmd
+  direct +figure : [string?; position; inline-text; block-text] block-cmd
+  direct +table : [string?; position; inline-text; block-text] block-cmd
   direct +p : [inline-text] block-cmd
   direct +section : [string?; string?; inline-text; block-text] block-cmd
   direct +subsection : [string?; string?; inline-text; block-text] block-cmd
@@ -53,24 +59,14 @@ end = struct
   let no-pads = (0pt, 0pt, 0pt, 0pt)
 
 
-  let font-size-normal  = 12pt
-  let font-size-title   = 32pt
-  let font-size-author  = 16pt
-  let font-size-section = 18pt
-  let font-size-subsection = 16pt
+  let font-size-normal  = 10pt
+  let font-size-section = 16pt
+  let font-size-subsection = 14pt
 
   let section-top-margin = 20pt
   let section-bottom-margin = 12pt
   let section-top-padding = 6pt
   let section-bottom-padding = 7pt
-  let section-line-sep = 4pt
-  let section-line-thickness1 = 2pt
-  let section-line-thickness2 = 1pt
-  let title-line-margin = 4pt
-  let title-line-thickness = 1pt
-  let header-line-thickness = 0.5pt
-  let header-line-margin-top = 2pt
-  let header-line-margin-bottom = 6pt
 
   let font-ratio = 1.
 
@@ -117,46 +113,10 @@ end = struct
       |> set-font Latin          font-latin-roman
       |> set-math-font `lmodern`
       |> set-hyphen-penalty 100
-
-
-  let-mutable ref-float-boxes <- []
-
-
-  let height-of-float-boxes pageno =
-%    let () = display-message `get height` in
-    (!ref-float-boxes) |> List.fold-left (fun h (pn, bb) -> (
-      if pn < pageno then h +' (get-natural-length bb) else h
-    )) 0pt
-
-
-  let-mutable ref-figure <- 0
-
-
-  let-inline ctx \figure ?:labelopt caption inner =
-    let () = ref-figure <- !ref-figure + 1 in
-    let s-num = arabic (!ref-figure) in
-    let () =
-      match labelopt with
-      | Some(label) -> register-cross-reference (label ^ `:num`) s-num
-      | None        -> ()
-    in
-    let it-num = embed-string s-num in
-    let ds =
-      match labelopt with
-      | Some(label) -> Annot.register-location-frame label
-      | None        ->
-        let d (_, _) _ _ _ = [] in (d, d, d, d)
-    in
-    let bb-inner =
-      block-frame-breakable ctx (2pt, 2pt, 2pt, 2pt) ds (fun ctx -> (
-        read-block ctx inner
-          +++ line-break true true ctx (inline-fil ++ read-inline ctx {図#it-num; #caption;} ++ inline-fil)
-      ))
-    in
-      hook-page-break (fun pbinfo _ -> (
-%        let () = display-message (`register` ^ (arabic pbinfo#page-number)) in
-        ref-float-boxes <- (pbinfo#page-number, bb-inner) :: !ref-float-boxes
-      ))
+      |> set-paragraph-margin 5pt 5pt
+      |> set-min-paragraph-ascender-and-descender 0pt 0pt
+      |> set-leading 5pt
+      |> set-min-gap-of-lines 5pt
 
 
 let title-deco =
@@ -300,17 +260,29 @@ let title-deco =
       ib ++ inline-skip (0pt -' w)
 
 
+  let-mutable ref-float-boxes <- []
 
+  let height-of-float-boxes pageno =
+    %    let () = display-message `get height` in
+        (!ref-float-boxes) |> List.fold-left (fun h (pn, bb) -> (
+          if pn < pageno then h +' (get-natural-length bb) else h
+        )) 0pt
+
+  let-mutable does-page-breaking-reach-last <- false
+  let-mutable ref-current-page <- 0
+
+  let top-space = 40pt
+  let bottom-space = 60pt
   let config =
     (|
       show-pages    = true;
       paper-width   = 210mm;
       paper-height  = 297mm;
       text-width    = 440pt;
-      text-height   = 630pt;
-      text-origin   = (80pt, 100pt);
+      text-height   = 297mm -' top-space -' bottom-space;
+      text-origin   = (80pt, top-space);
       header-origin = (80pt, 30pt);
-      footer-origin = (80pt, 780pt);
+      footer-origin = (80pt, 297mm -' bottom-space +' 10pt);
       header-width  = 440pt;
       footer-width  = 440pt;
     |)
@@ -330,6 +302,10 @@ let title-deco =
   let-mutable num-chapter <- 0
   let-mutable start-page <- 0
 
+
+  % 浮動図の処理については
+  % https://github.com/gfngfn/SATySFi/wiki/SATySFi%E3%81%AEfigure%E3%82%92%E5%B0%91%E3%81%97%E6%94%B9%E5%96%84%E3%81%97%E3%81%A4%E3%81%A4%E5%A4%9A%E6%AE%B5%E7%B5%84%E3%81%BF%E3%82%92%E5%AE%9F%E7%8F%BE%E3%81%99%E3%82%8B
+  % とstdjareportの実装を参照するとわかりやすい
   let document record inner =
     % -- mandatory designation --
     let title = record#title in
@@ -337,7 +313,6 @@ let title-deco =
     let () = start-page <- record#start-page in
 
     % -- constants --
-    let thickness = header-line-thickness in
 
     let () =
       register-cross-reference `changed` `F`
@@ -355,9 +330,9 @@ let title-deco =
 
     % -- page settings --
     let pagecontf pbinfo =
-      let () = FootnoteScheme.start-page () in
-      let hgtfb = height-of-float-boxes pbinfo#page-number in
       let pageno = pbinfo#page-number + !start-page in
+      let hgtfb = height-of-float-boxes pageno in
+      let () = ref-current-page <- pageno in
       let (txtorgx, txtorgy) =
         if pageno mod 2 == 0 then
           % 偶数ページの場合は左側が小口で右側がのど
@@ -374,6 +349,36 @@ let title-deco =
     in
     let pagepartsf pbinfo =
       let pageno = pbinfo#page-number + !start-page in
+      let header =
+        let ctx =
+          get-standard-context hdrwid
+            |> set-paragraph-margin 0pt 0pt
+        in
+        let ib-text =
+          if pageno mod 2 == 0 then
+            (inline-fil ++ read-inline ctx title)
+          else
+            (read-inline ctx title ++ inline-fil)
+        in
+%        let () = display-message `insert` in
+        let (bb-float-boxes, acc) =
+          (!ref-float-boxes) |> List.fold-left (fun (bbacc, acc) elem -> (
+            let (pn, bb) = elem in
+              if pn < pageno then
+                let () = display-message (`use `# ^ arabic pn) in
+                let bbs =
+                  line-break true true (ctx |> set-paragraph-margin 0pt 12pt)
+                    (inline-fil ++ embed-block-top ctx txtwid (fun _ -> bb) ++ inline-fil)
+                      % 'ctx' is a dummy context
+                in
+                  (bbacc +++ bbs, acc)
+              else
+                (bbacc, elem :: acc)
+          )) (block-nil, [])
+        in
+        let () = ref-float-boxes <- acc in
+          bb-float-boxes
+      in
       let footer =
         let ctx = get-standard-context ftrwid in
         let bar-width = 5pt in
@@ -402,12 +407,46 @@ let title-deco =
       in
         (|
           header-origin  = hdrorg;
-          header-content = block-nil;
+          header-content = header;
           footer-origin  = ftrorg;
           footer-content = footer;
         |)
     in
-    let doc = page-break page pagecontf pagepartsf (bb-title +++ bb-main) in
+    % -- column settings --
+    let columnhookf () =
+      let () = FootnoteScheme.start-page () in
+      let () = display-message `column start.` in
+      block-nil
+    in
+    let columnendhookf () =
+      let pageno = !ref-current-page in
+      let last = !does-page-breaking-reach-last in
+      let remains =
+        (!ref-float-boxes) |> List.fold-left (fun b (pn, _) -> (
+          if pn < pageno then b else true
+        )) false
+      in
+      let () =
+        let s1 = if last then `T` else `F` in
+        let s2 = if remains then `T` else `F` in
+        display-message (`column end `# ^ arabic pageno ^ #` (last: `# ^ s1 ^ `, remains: `# ^ s2 ^ `)`)
+      in
+      if last then
+        if remains then
+          block-skip 0pt  % adds a new page for remaining figures
+        else
+          block-nil
+      else
+        block-nil
+    in
+
+    let bb-last =
+      hook-page-break-block (fun _ _ -> (
+        let () = display-message `reach last.` in
+        does-page-breaking-reach-last <- true
+      ))
+    in
+    let doc = page-break-multicolumn page [] columnhookf columnendhookf pagecontf pagepartsf (bb-title +++ bb-main +++ bb-last) in
     let () = register-outline (List.reverse !outline-ref) in
       doc
 
@@ -434,6 +473,75 @@ let title-deco =
     in
       inline-frame-breakable no-pads (Annot.link-to-location-frame key None) (read-inline ctx it)
 
+
+  let-mutable ref-figure <- 0
+  let-mutable ref-table <- 0
+
+
+  let-block ctx +figure ?:labelopt position caption inner =
+    let () = ref-figure <- !ref-figure + 1 in
+    let s-num = (arabic !num-chapter) ^ `.` ^ (arabic !ref-figure) in
+    let () =
+      match labelopt with
+      | Some(label) -> register-cross-reference (label ^ `:num`) s-num
+      | None        -> ()
+    in
+    let it-num = embed-string s-num in
+    let ds =
+      match labelopt with
+      | Some(label) -> Annot.register-location-frame label
+      | None        ->
+        let d (_, _) _ _ _ = [] in (d, d, d, d)
+    in
+    let bb-inner =
+      block-frame-breakable (ctx |> set-paragraph-margin 0pt 0pt) (0pt, 0pt, 15pt, 15pt) ds (fun ctx -> (
+        let ctx = ctx  |> set-paragraph-margin 5pt 5pt in
+        read-block ctx inner
+          +++ block-skip 1pt
+          +++ line-break true true ctx (inline-fil ++ read-inline ctx {図#it-num; #caption;} ++ inline-fil)
+      ))
+    in
+    match position with
+    | Top -> (
+      hook-page-break-block (fun pbinfo _ -> (
+%        let () = display-message (`register` ^ (arabic pbinfo#page-number)) in
+        ref-float-boxes <- (pbinfo#page-number + !start-page, bb-inner) :: !ref-float-boxes
+      ))
+    )
+    | Here -> bb-inner
+
+
+  let-block ctx +table ?:labelopt position caption inner =
+    let () = ref-table <- !ref-table + 1 in
+    let s-num = (arabic !num-chapter) ^ `.` ^ (arabic !ref-table) in
+    let () =
+      match labelopt with
+      | Some(label) -> register-cross-reference (label ^ `:num`) s-num
+      | None        -> ()
+    in
+    let it-num = embed-string s-num in
+    let ds =
+      match labelopt with
+      | Some(label) -> Annot.register-location-frame label
+      | None        ->
+        let d (_, _) _ _ _ = [] in (d, d, d, d)
+    in
+    let bb-inner =
+      block-frame-breakable (ctx |> set-paragraph-margin 0pt 0pt) (0pt, 0pt, 15pt, 15pt) ds (fun ctx -> (
+        let ctx = ctx  |> set-paragraph-margin 5pt 5pt in
+        read-block ctx inner
+          +++ block-skip 1pt
+          +++ line-break true true ctx (inline-fil ++ read-inline ctx {図#it-num; #caption;} ++ inline-fil)
+      ))
+    in
+    match position with
+    | Top -> (
+      hook-page-break-block (fun pbinfo _ -> (
+%        let () = display-message (`register` ^ (arabic pbinfo#page-number)) in
+        ref-float-boxes <- (pbinfo#page-number + !start-page, bb-inner) :: !ref-float-boxes
+      ))
+    )
+    | Here -> bb-inner
 
 
   let-mutable num-section <- 0
@@ -470,7 +578,7 @@ let title-deco =
         inline-frame-breakable no-pads (Annot.register-location-frame label)
           (ib-num ++ (inline-skip 10pt) ++ ib-title ++ (inline-fil))
       in
-      line-break true false ctx ib
+      line-break true false (ctx |> set-paragraph-margin section-top-margin section-bottom-margin) ib
     in
     let bb-inner = read-block ctx inner in
       bb-title +++ bb-inner
@@ -602,9 +710,10 @@ let title-deco =
       in
       (decoS, decoH, Deco.empty, decoT)
     in
+    let ctx = ctx |> set-paragraph-margin 15pt 15pt in
     block-frame-breakable ctx pads deco-set (fun ctx -> (
       let ctx =
-        ctx |> set-paragraph-margin 5pt 1pt
+        ctx |> set-paragraph-margin 5pt 5pt
             |> set-min-paragraph-ascender-and-descender 0pt 0pt
             |> set-leading 4pt
       in
@@ -641,7 +750,11 @@ let title-deco =
   let-block ctx +framebox text =
     let pads = (10pt, 10pt, 10pt, 10pt) in
     let deco-set = VDecoSet.simple-frame 2pt Color.black Color.white in
-    block-frame-breakable ctx pads deco-set (fun ctx -> read-block ctx text)
+    let ctx = ctx |> set-paragraph-margin 15pt 15pt in
+    block-frame-breakable ctx pads deco-set (fun ctx -> (
+      let ctx = ctx |> set-paragraph-margin 5pt 5pt in
+      read-block ctx text
+    ))
 
 end
 

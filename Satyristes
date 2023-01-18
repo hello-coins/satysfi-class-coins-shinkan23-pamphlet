@@ -44,4 +44,5 @@
     ((class-coins-shinkan23-pamphlet ()) ; the main library
      (dist ()) ; Standard library
      (lipsum ())
+     (latexcmds ())
     )))

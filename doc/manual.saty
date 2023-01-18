@@ -1,6 +1,7 @@
 @require: class-coins-shinkan23-pamphlet/class-coins-shinkan23-pamphlet
 %@import: ../src/class-coins-shinkan23-pamphlet
 @require: lipsum/lipsum
+@require: latexcmds/latexcmds
 
 document (|
   title = {ﾅﾝﾁｬﾗ紹介};
@@ -11,6 +12,36 @@ document (|
     +p {\wagahai(1);}
     +subsection {subsection} <
       +p {\wagahai(2);}
+      +figure (Here) {その場に出力される図} <
+        +centering {
+          \fbox {\parbox (5cm) <
+            +p{図の代わりとなる文章1}
+            +p{図の代わりとなる文章2}
+            +p{図の代わりとなる文章3}
+            +p{図の代わりとなる文章4}
+          >
+        }}
+      >
+      +figure (Top) {浮動する図} <
+        +centering {
+          \fbox {\parbox (5cm) <
+            +p{図の代わりとなる文章1}
+            +p{図の代わりとなる文章2}
+            +p{図の代わりとなる文章3}
+            +p{図の代わりとなる文章4}
+          >
+        }}
+      >
+      +table (Top) {浮動する表} <
+        +centering {
+          \fbox {\parbox (5cm) <
+            +p{表の代わりとなる文章1}
+            +p{表の代わりとなる文章2}
+            +p{表の代わりとなる文章3}
+            +p{表の代わりとなる文章4}
+          >
+        }}
+      >
       +p {\wagahai(3);}
     >
   >
