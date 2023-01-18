@@ -22,7 +22,7 @@ document (|
           >
         }}
       >
-      +table (Top) {浮動する図} <
+      +figure (Top) {浮動する図} <
         +centering {
           \fbox {\parbox (5cm) <
             +p{図の代わりとなる文章1}
