@@ -59,9 +59,10 @@ end = struct
   let no-pads = (0pt, 0pt, 0pt, 0pt)
 
 
-  let font-size-normal  = 10pt
-  let font-size-section = 16pt
-  let font-size-subsection = 14pt
+  let font-size-normal  = 9pt
+  let font-size-section = 14pt
+  let font-size-subsection = 12pt
+  let font-size-title = 20pt
 
   let section-top-margin = 20pt
   let section-bottom-margin = 12pt
@@ -117,6 +118,7 @@ end = struct
       |> set-min-paragraph-ascender-and-descender 0pt 0pt
       |> set-leading 5pt
       |> set-min-gap-of-lines 5pt
+      |> set-font-size font-size-normal
 
 
 let title-deco =
@@ -195,7 +197,7 @@ let title-deco =
   let chapter-heading ctx num title =
     let line-width = get-text-width ctx in
     let ctx =
-      ctx |> set-paragraph-margin 10pt 1pt
+      ctx |> set-paragraph-margin 15pt 1pt
           |> set-min-paragraph-ascender-and-descender 0pt 0pt
           |> set-leading 4pt
     in
@@ -233,7 +235,7 @@ let title-deco =
       )
     in
     let ctx-title =
-      ctx |> set-font-size 20pt
+      ctx |> set-font-size font-size-title
           |> set-font-gothic
     in
     let ib-title = inline-fil ++ (read-inline ctx-title title) ++ inline-fil in
@@ -318,7 +320,7 @@ let title-deco =
       register-cross-reference `changed` `F`
     in
 
-    let ctx-doc = get-standard-context txtwid in
+    let ctx-doc = get-standard-context txtwid in % ((txtwid -' 20pt) *' 0.5) in
 
     % -- title --
     let bb-title =
@@ -560,6 +562,13 @@ let title-deco =
       form-paragraph ctx br-parag
 
 
+  let-block ctx +bunseki name =
+    let br-parag =
+      inline-fil ++ read-inline ctx { 《文責: #name;》 }
+    in
+      form-paragraph ctx br-parag
+
+
   let section-scheme ctx label title outline-title-opt inner =
     let ctx-title = make-section-title ctx in
     let () = num-section <- !num-section + 1 in
@@ -655,9 +664,6 @@ let title-deco =
       FootnoteScheme.main ctx ibf bbf
 
 
-  let-block ctx +bunseki name =
-    line-break true true ctx (inline-fil ++ read-inline ctx { 《文責: #name;》 })
-
   let-inline ctx \non-hyph str =
     let s-lst = string-explode str in
     let f i =
@@ -710,7 +716,7 @@ let title-deco =
       in
       (decoS, decoH, Deco.empty, decoT)
     in
-    let ctx = ctx |> set-paragraph-margin 15pt 15pt in
+    let ctx = ctx |> set-paragraph-margin 50pt 15pt in
     block-frame-breakable ctx pads deco-set (fun ctx -> (
       let ctx =
         ctx |> set-paragraph-margin 5pt 5pt
@@ -721,6 +727,7 @@ let title-deco =
       let title-ctx =
         ctx |> set-cjk-font font-cjk-gothic
             |> set-latin-font font-latin-serif-italic
+            |> set-font-size font-size-subsection
       in
       let head-ib =
         inline-skip side-gap ++
