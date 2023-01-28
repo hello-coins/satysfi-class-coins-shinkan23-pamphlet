@@ -47,6 +47,7 @@ module CoinsShinkan23Pamphlet : sig
   direct +bunseki : [inline-text] block-cmd
   direct +column : [inline-text; inline-text; block-text] block-cmd
   direct +framebox : [block-text] block-cmd
+  direct +tsukuba-word : [string?; inline-text; inline-text] block-cmd 
   direct \emph : [inline-text] inline-cmd
   direct \footnote : [inline-text] inline-cmd
   direct \url : [string] inline-cmd
@@ -897,6 +898,27 @@ let title-deco =
       let ctx = ctx |> set-paragraph-margin 5pt 5pt in
       read-block ctx text
     ))
+  
+  let-block ctx +tsukuba-word ?:word-str yomi description =
+    let ctx-head = ctx |> set-cjk-font font-cjk-gothic
+                       |> set-latin-font font-cjk-gothic
+                       |> set-font-size 10pt
+    in
+    let head =
+      match word-str with
+      | Some(word-str) -> let word = embed-string word-str in
+                            read-inline ctx-head {#yomi;【#word;】}
+      | None           -> read-inline ctx-head {#yomi;　}
+    in
+    let body = read-inline ctx {#description;} in
+    let b1 = line-break true true ctx head in
+    let b2 =
+      let br-parag =
+        body ++ inline-fil
+      in
+        form-paragraph ctx br-parag
+    in
+      b1 +++ b2
 
 end
 
