@@ -819,6 +819,7 @@ let title-deco =
   let-block ctx +column title author text =
     let () = column-num <- !column-num + 1 in
     let column-num-it = !column-num |> arabic |> embed-string in
+    let chapter-num-it = !num-chapter |> arabic |> embed-string in
     let side-gap = 2pt in
     let pads = (side-gap, side-gap, 5pt, 5pt) in
     let bar-color = Color.gray 0.3 in
@@ -867,7 +868,7 @@ let title-deco =
       in
       let head-ib =
         inline-skip side-gap ++
-        read-inline title-ctx {Column #column-num-it; #title;} ++
+        read-inline title-ctx {Column #chapter-num-it;.#column-num-it; #title;} ++
         inline-fil ++
         read-inline ctx {\sans{文責：#author;}} ++
         inline-skip side-gap
