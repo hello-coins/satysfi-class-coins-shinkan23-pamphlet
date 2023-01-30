@@ -1,6 +1,7 @@
-% The following code is from "stdjabook.satyh" (https://github.com/gfngfn) contained in "gfngfn/SATySFi" (https://github.com/gfngfn/SATySFi /SATySFi/blob/master/lib-satysfi/dist/packages/stdjabook.satyh), from which the code is borrowed and modified.
+% The following code is from "class-coins-shinkan23-pamphlet.satyh" (https://github.com/coins-shinkan23) contained in "coins-shinkan23/satysfi-class-coins-shinkan23-pamphlet" (https://github.com/coins-shinkan23/satysfi-class-coins-shinkan23-pamphlet/blob/main/src/class-coins-shinkan23-pamphlet.satyh), from which the code is borrowed and modified.
+% Also, the original code is borrowed from "stdjabook.satyh" (https://github.com/gfngfn) contained in "gfngfn/SATySFi" (https://github.com/gfngfn/SATySFi /SATySFi/blob/master/lib-satysfi/dist/packages/stdjabook.satyh).
 % Since SATySFi is licensed under LGPL-3.0, the same license was granted to satysfi-coinsshinkan23pamphlet.
-% At the time of borrowing, the authors of the original code were gfngfn (https://github.com/gfngfn), matsud224 (https://github.com/matsud224), puripuri2100 (https://github.com/puripuri2100), and nekketsuuu (https://github.com/nekketsuuu).
+% At the time of borrowing, the authors of the original code were gfngfn (https://github.com/gfngfn), matsud224 (https://github.com/matsud224), puripuri2100 (https://github.com/puripuri2100), and nekketsuuu (https://github.com/nekketsuuu), momeemt(https://github.com/momeemt).
 
 % -*- coding: utf-8 -*-
 @require: pervasives
