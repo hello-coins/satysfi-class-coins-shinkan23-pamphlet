@@ -29,6 +29,7 @@ module CoinsShinkan23Pamphlet : sig
       title : inline-text;
       num-chapter : int;
       start-page : int;
+      show-title-num : bool;
     |)
   
   val document-two-column : 'a -> block-text -> document
@@ -201,7 +202,7 @@ let title-deco =
     let y-gap = (h +' d) *' 0.5 -' d in
     draw-text (x -' x-gap, y -' y-gap) ib
 
-  let chapter-heading ctx num title =
+  let chapter-heading ctx num title show-title-num =
     let line-width = get-text-width ctx in
     let ctx =
       ctx |> set-paragraph-margin 15pt 1pt
@@ -259,8 +260,10 @@ let title-deco =
         )
       )
     in
-    bb-num +++ bb-title +++ bar
-
+      if show-title-num then
+        bb-num +++ bb-title +++ bar
+      else
+        bb-title
 
 
   let-inline ctx \dummy it =
@@ -460,7 +463,7 @@ let title-deco =
 
     % -- title --
     let bb-title =
-      chapter-heading ctx-doc !num-chapter title 
+      chapter-heading ctx-doc !num-chapter title record#show-title-num
     in
 
     % -- main --
