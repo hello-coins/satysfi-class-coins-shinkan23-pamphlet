@@ -15,7 +15,7 @@
 @require: vdecoset
 @require: deco
 @require: base/int
-
+@require: num-conversion/num-conversion
 
 type position =
   | Top
@@ -27,6 +27,7 @@ module TwoColumn : sig
     constraint 'a :: (|
       title : inline-text;
       start-page : int;
+      is-roman-style-page-num : bool;
     |)
 
   direct \ref : [string] inline-cmd
@@ -378,7 +379,16 @@ let title-deco =
             ]
           )
         in
-        let it-pageno = embed-string (arabic pageno) in
+        let it-pageno = 
+          if record#is-roman-style-page-num then
+            let str = match NumConversion.to-roman-lower pageno with
+                      | None -> arabic pageno
+                      | Some(rl) -> rl
+            in
+              embed-string str
+          else
+            embed-string (arabic pageno)
+        in
         if pageno mod 2 == 0 then
           % 偶数ページは左端にページ番号
           line-break true true ctx
