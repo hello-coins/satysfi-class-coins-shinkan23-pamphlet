@@ -1,0 +1,122 @@
+% The following code is from "stdjabook.satyh" (https://github.com/gfngfn) contained in "gfngfn/SATySFi" (https://github.com/gfngfn/SATySFi /SATySFi/blob/master/lib-satysfi/dist/packages/stdjabook.satyh), from which the code is borrowed and modified.
+% Since SATySFi is licensed under LGPL-3.0, the same license was granted to satysfi-coinsshinkan23pamphlet.
+% At the time of borrowing, the authors of the original code were gfngfn (https://github.com/gfngfn), matsud224 (https://github.com/matsud224), puripuri2100 (https://github.com/puripuri2100), and nekketsuuu (https://github.com/nekketsuuu).
+
+% -*- coding: utf-8 -*-
+
+@require: math
+@require: code
+
+module Part : sig
+
+  val document : 'a -> block-text -> document
+    constraint 'a :: (|
+      part-num : inline-text;
+      part : inline-text;
+    |)
+
+end = struct
+
+  let font-ratio = 1.
+  let font-latin-roman  = (`fonts-noto-serif:NotoSerif-Regular`, font-ratio, 0.)
+  let font-latin-bold   = (`fonts-noto-serif:NotoSerif-Bold` , font-ratio, 0.)
+  let font-latin-serif-italic = (`fonts-noto-serif:NotoSerif-Italic`, font-ratio, 0.)
+  let font-latin-sans-italic = (`fonts-noto-sans:NotoSans-Italic`, font-ratio, 0.)
+  let font-latin-sans   = (`fonts-noto-sans:NotoSans-Regular`, font-ratio, 0.)
+  let font-cjk-mincho   = (`fonts-noto-serif-cjk-jp:NotoSerifCJKjp-Regular`, font-ratio, 0.)
+  let font-cjk-gothic   = (`fonts-noto-sans-cjk-jp:NotoSansCJKjp-Regular`, font-ratio, 0.)
+  let font-cjk-gothic-b = (`fonts-noto-sans-cjk-jp:NotoSansCJKjp-Medium`, font-ratio, 0.)
+
+  let set-latin-font font ctx =
+    ctx |> set-font Latin font
+
+  let set-cjk-font font ctx =
+    ctx |> set-font HanIdeographic font
+        |> set-font Kana           font
+
+  let set-font-gothic ctx =
+    ctx |> set-cjk-font font-cjk-gothic
+        |> set-latin-font font-cjk-gothic
+
+  let get-standard-context wid =
+    get-initial-context wid (command \math)
+      |> set-code-text-command Code.(command \code)
+      |> set-dominant-wide-script Kana
+      |> set-language Kana Japanese
+      |> set-language HanIdeographic Japanese
+      |> set-dominant-narrow-script Latin
+      |> set-language Latin English
+      |> set-font Kana           font-cjk-mincho
+      |> set-font HanIdeographic font-cjk-mincho
+      |> set-font Latin          font-latin-roman
+      |> set-math-font `lmodern`
+      |> set-hyphen-penalty 100
+
+  let-mutable outline-ref <- []
+
+  let config =
+    (|
+      show-pages    = true;
+      paper-width   = 210mm;
+      paper-height  = 297mm;
+      text-width    = 440pt;
+      text-height   = 630pt;
+      text-origin   = (80pt, 100pt);
+      header-origin = (80pt, 30pt);
+      footer-origin = (80pt, 780pt);
+      header-width  = 440pt;
+      footer-width  = 440pt;
+    |)
+
+  let paper-width = config#paper-width
+  let paper-height = config#paper-height
+  let page = UserDefinedPaper(paper-width, paper-height)
+  let txtorg = config#text-origin
+  let txtwid = config#text-width
+  let txthgt = config#text-height
+  let hdrorg = config#header-origin
+  let ftrorg = config#footer-origin
+  let hdrwid = config#header-width
+  let ftrwid = config#footer-width
+  let show-pages = config#show-pages
+
+  let document record inner =
+    let part = record#part in
+    let part-num = record#part-num in
+    let () = register-cross-reference `changed` `F` in
+    let ctx-doc = get-standard-context txtwid in
+    let ctx-part = ctx-doc |> set-font-size 25pt
+                           |> set-font-gothic
+    in
+    let ctx-part-num = ctx-doc |> set-font-size 20pt
+                               |> set-font-gothic
+    in
+    let ib-part = inline-fil ++ (read-inline ctx-part part) ++ inline-fil in
+    let ib-part-num = inline-fil ++ (read-inline ctx-part-num { 第#part-num;部 }) ++ inline-fil in
+    let bb-part = line-break false false ctx-part ib-part in
+    let bb-part-num = line-break false false ctx-part-num ib-part-num in
+    let bb-part-heading =
+      (block-skip (txthgt *' 0.25)) +++ bb-part-num +++ bb-part
+    in
+    let pagecontf pbinfo =
+      let (txtorgx, txtorgy) = txtorg
+      in
+      (|
+        text-origin = (txtorgx, txtorgy);
+        text-height = txthgt;
+      |)
+    in
+    let pagepartsf pbinfo =
+        (|
+          header-origin  = hdrorg;
+          header-content = block-nil;
+          footer-origin  = ftrorg;
+          footer-content = block-nil;
+        |)
+    in
+    let doc = page-break page pagecontf pagepartsf bb-part-heading in
+    let () = register-outline (List.reverse !outline-ref) in
+      doc
+end
+
+let document = Part.document
