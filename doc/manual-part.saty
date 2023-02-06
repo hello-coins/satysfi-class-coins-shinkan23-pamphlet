@@ -2,6 +2,6 @@
 % @import: ../src/part
 
 document(|
-  part-num = {II};
+  part-num = 2;
   part = {基本文法};
 |) '<>

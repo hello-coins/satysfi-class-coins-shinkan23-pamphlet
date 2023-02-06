@@ -1,5 +1,5 @@
-% @require: class-coins-shinkan23-pamphlet/two-column
-@import: ../src/two-column
+@require: class-coins-shinkan23-pamphlet/two-column
+% @import: ../src/two-column
 @require: lipsum/lipsum
 
 document (|

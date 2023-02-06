@@ -6,12 +6,13 @@
 
 @require: math
 @require: code
+@require: num-conversion/num-conversion
 
 module Part : sig
 
   val document : 'a -> block-text -> document
     constraint 'a :: (|
-      part-num : inline-text;
+      part-num : int;
       part : inline-text;
     |)
 
@@ -92,7 +93,14 @@ end = struct
                                |> set-font-gothic
     in
     let ib-part = inline-fil ++ (read-inline ctx-part part) ++ inline-fil in
-    let ib-part-num = inline-fil ++ (read-inline ctx-part-num { 第#part-num;部 }) ++ inline-fil in
+    let il-part-num =
+      let partno = match NumConversion.to-roman-upper part-num with
+                | None -> arabic part-num
+                | Some(rl) -> rl
+      in
+        embed-string partno
+    in
+    let ib-part-num = inline-fil ++ (read-inline ctx-part-num { 第#il-part-num;部 }) ++ inline-fil in
     let bb-part = line-break false false ctx-part ib-part in
     let bb-part-num = line-break false false ctx-part-num ib-part-num in
     let bb-part-heading =
