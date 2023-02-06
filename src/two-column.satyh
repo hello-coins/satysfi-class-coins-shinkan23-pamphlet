@@ -308,7 +308,7 @@ let title-deco =
 
   let document record inner =
     let title = record#title in
-    let () = start-page <- record#start-page in
+    let () = start-page <- record#start-page - 1 in
     let () =
       register-cross-reference `changed` `F`
     in

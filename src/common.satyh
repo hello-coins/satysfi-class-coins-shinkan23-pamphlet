@@ -314,7 +314,7 @@ let title-deco =
     % -- mandatory designation --
     let title = record#title in
     let () = num-chapter <- record#num-chapter in
-    let () = start-page <- record#start-page in
+    let () = start-page <- record#start-page - 1 in
 
     % -- constants --
 
