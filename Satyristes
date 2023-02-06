@@ -20,6 +20,7 @@
      (fonts-noto-serif ())
      (fonts-noto-sans-cjk-jp ())
      (fonts-noto-serif-cjk-jp ())
+     (num-conversion ())
     )))
 
 ;; Library doc declaration
@@ -33,10 +34,20 @@
   ;; Build commands
   (build
     ;; Run SATySFi
-    ((satysfi "manual.saty" "-o" "manual.pdf")))
+    (
+      (satysfi "manual-common.saty" "-o" "manual-common.pdf")
+      (satysfi "manual-part.saty" "-o" "manual-part.pdf")
+      (satysfi "manual-two-column.saty" "-o" "manual-two-column.pdf")
+    )
+  )
   ;; Files
   (sources
-    ((doc "manual.pdf" "doc/manual.pdf")))
+    (
+      (doc "manual-common.pdf" "doc/manual-common.pdf")
+      (doc "manual-part.pdf" "doc/manual-part.pdf")
+      (doc "manual-two-column.pdf" "doc/manual-two-column.pdf")
+    )
+  )
   ;; OPAM package file
   (opam "satysfi-class-coins-shinkan23-pamphlet-doc.opam")
   ;; Dependency
