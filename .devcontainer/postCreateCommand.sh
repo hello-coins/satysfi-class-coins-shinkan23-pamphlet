@@ -1,9 +1,7 @@
 #/bin/bash
 
-PACKAGES="satysfi-fss"
-
 opam update
-opam install $PACKAGES
+opam pin add  --verbose --yes "file://$PWD"
 eval $(opam env)
 satyrographos install
 
