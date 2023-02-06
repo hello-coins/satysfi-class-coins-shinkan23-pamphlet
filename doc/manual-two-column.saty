@@ -1,0 +1,14 @@
+@require: class-coins-shinkan23-pamphlet/two-column
+% @import: ../src/two-column
+@require: lipsum/lipsum
+
+document (|
+  title = {2段組};
+  start-page = 50;
+|) '<
+  +p {\wagahai(1);}
+  +p {\wagahai(2);}
+  +p {\wagahai(3);}
+  +p {\wagahai(4);}
+  +p {\wagahai(5);}
+>

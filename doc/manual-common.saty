@@ -1,5 +1,5 @@
-% @require: class-coins-shinkan23-pamphlet/common
-@import: ../src/common
+@require: class-coins-shinkan23-pamphlet/common
+% @import: ../src/common
 @require: lipsum/lipsum
 @require: latexcmds/latexcmds
 

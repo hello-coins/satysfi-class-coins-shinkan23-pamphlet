@@ -1,5 +1,5 @@
-% @require: class-coins-shinkan23-pamphlet/part
-@import: ../src/part
+@require: class-coins-shinkan23-pamphlet/part
+% @import: ../src/part
 
 document(|
   part-num = {II};
