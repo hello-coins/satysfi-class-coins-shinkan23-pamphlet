@@ -409,7 +409,7 @@ let title-deco =
           else
             line-break true true ctx
               (
-                inline-fil ++ read-inline ctx {2023年度情報科学類新歓パンフレット} ++ inline-skip 5pt ++
+                inline-fil ++ read-inline ctx {2023年度情報科学類新歓ブックレット} ++ inline-skip 5pt ++
                 bar ++ inline-skip 5pt ++ (read-inline ctx {#it-pageno;})
               )
       in
