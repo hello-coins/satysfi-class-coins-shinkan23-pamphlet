@@ -30,6 +30,7 @@ module Common : sig
       num-chapter : int;
       start-page : int;
       show-title-num : bool;
+      show-page: bool;
     |)
 
   direct \ref : [string] inline-cmd
@@ -398,16 +399,19 @@ let title-deco =
           )
         in
         let it-pageno = embed-string (arabic pageno) in
-        if pageno mod 2 == 0 then
-          % 偶数ページは左端にページ番号
-          line-break true true ctx
-            ((read-inline ctx {#it-pageno;}) ++ inline-skip 5pt ++ bar ++ inline-fil)
+        if not record#show-page then
+          line-break true true ctx inline-fil
         else
-          line-break true true ctx
-            (
-              inline-fil ++ read-inline ctx {2023年度情報科学類新歓パンフレット} ++ inline-skip 5pt ++
-              bar ++ inline-skip 5pt ++ (read-inline ctx {#it-pageno;})
-            )
+          if pageno mod 2 == 0 then
+            % 偶数ページは左端にページ番号
+            line-break true true ctx
+              ((read-inline ctx {#it-pageno;}) ++ inline-skip 5pt ++ bar ++ inline-fil)
+          else
+            line-break true true ctx
+              (
+                inline-fil ++ read-inline ctx {2023年度情報科学類新歓パンフレット} ++ inline-skip 5pt ++
+                bar ++ inline-skip 5pt ++ (read-inline ctx {#it-pageno;})
+              )
       in
         (|
           header-origin  = hdrorg;
