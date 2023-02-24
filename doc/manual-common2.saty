@@ -1,0 +1,19 @@
+@require: class-coins-shinkan23-pamphlet/common
+% @import: ../src/common
+@require: lipsum/lipsum
+@require: latexcmds/latexcmds
+
+document (|
+  title = {タイトル番号もページも見せない場合};
+  num-chapter = 1;
+  start-page = 0;
+  show-title-num = false;
+  show-page = false;
+|) '<
+  +section{Hello} <
+    +p {\wagahai(1);}
+    +subsection {subsection} <
+      +p {\wagahai(2);}
+    >
+  >
+>

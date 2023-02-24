@@ -8,6 +8,7 @@ document (|
   num-chapter = 2;
   start-page = 9;
   show-title-num = true;
+  show-page = true;
 |) '<
   +section{Hello} <
     +p {\wagahai(1);}
